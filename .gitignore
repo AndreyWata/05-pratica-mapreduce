@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Data files (exceto exemplos)
+mapreduce_app/data/output.txt
+mapreduce_app/data/*_output.txt
+mapreduce_app/data/large_input.txt
+mapreduce_app/data/benchmark_*.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log

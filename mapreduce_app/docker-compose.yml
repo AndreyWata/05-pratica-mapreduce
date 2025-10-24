@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mapreduce-processor:
+    build: .
+    image: mapreduce-app:latest
+    container_name: mapreduce-worker
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python3 mapreduce_runner.py --input data/input.txt --output data/output.txt
+    
+  mapreduce-large:
+    build: .
+    image: mapreduce-app:latest
+    container_name: mapreduce-large-worker
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python3 mapreduce_runner.py --input data/large_input.txt --output data/large_output.txt
+    profiles:
+      - large

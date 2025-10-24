@@ -1,0 +1,8 @@
+big data está transformando o mundo
+ciência de dados requer infraestrutura de big data
+python é excelente para processamento de dados
+mapreduce permite processamento distribuído de dados
+containers docker simplificam a implantação de big data
+engenharia de dados é essencial para ciência de dados
+python e docker funcionam bem juntos
+big data precisa de frameworks eficientes de processamento

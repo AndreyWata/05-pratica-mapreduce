@@ -1,0 +1,6 @@
+2025-10-23 10:15:32 INFO Login de usuário realizado com sucesso
+2025-10-23 10:16:45 ERROR Falha na conexão com banco de dados
+2025-10-23 10:17:12 INFO Processamento de dados iniciado
+2025-10-23 11:20:01 WARNING Alto uso de memória detectado
+2025-10-23 11:25:33 INFO Backup concluído
+2025-10-23 11:30:18 ERROR Timeout na API
