@@ -151,12 +151,16 @@ python3 --version
 
 Voce deve ver a versao do Python instalada (3.8 ou superior).
 
+**EVIDENCIA-01 - Ambiente Python:** capture um print de tela mostrando o comando `python3 --version` e a versao exibida no terminal.
+
 ### 2.3 Explorando o projeto
 
 ```bash
 ls -la
 ls -la mapreduce_app
 ```
+
+No painel lateral do Codespaces, abra o **Explorer** e confira a estrutura completa do projeto. Expanda a pasta `mapreduce_app` e depois a pasta `data`.
 
 Arquivos principais:
 
@@ -165,6 +169,8 @@ Arquivos principais:
 - `mapreduce_runner.py`: orquestra o pipeline completo em Python puro.
 - `benchmark.py`: gera datasets de teste e mede desempenho.
 - `data/`: contem os datasets usados na atividade.
+
+**EVIDENCIA-02 - Repositorio aberto:** capture um print de tela mostrando o Codespaces com o repositorio aberto e a pasta `mapreduce_app` visivel no Explorer.
 
 ### Checkpoint 2
 
@@ -184,17 +190,13 @@ cd mapreduce_app
 
 ### 3.2 Entendendo o dataset inicial
 
-```bash
-cat data/input.txt
-```
+No Explorer do Codespaces, abra o arquivo `mapreduce_app/data/input.txt` no editor.
 
-Esse arquivo contem frases curtas sobre Big Data e tecnologia. Ele sera usado para validar o pipeline antes de processar arquivos maiores.
+Esse arquivo contem frases curtas sobre Big Data e tecnologia. Examine o conteudo diretamente no editor para entender quais palavras deverao aparecer na contagem. Ele sera usado para validar o pipeline antes de processar arquivos maiores.
 
 ### 3.3 Analisando o Mapper
 
-```bash
-cat mapper.py
-```
+No Explorer do Codespaces, abra o arquivo `mapreduce_app/mapper.py` e leia o codigo completo no editor.
 
 O `mapper.py`:
 
@@ -220,9 +222,7 @@ systems 1
 
 ### 3.4 Analisando o Reducer
 
-```bash
-cat reducer.py
-```
+No Explorer do Codespaces, abra o arquivo `mapreduce_app/reducer.py` e leia o codigo completo no editor.
 
 O `reducer.py`:
 
@@ -245,9 +245,7 @@ data    1
 
 ### 3.5 Entendendo o Runner
 
-```bash
-cat mapreduce_runner.py
-```
+No Explorer do Codespaces, abra o arquivo `mapreduce_app/mapreduce_runner.py` e leia o codigo completo no editor.
 
 O `mapreduce_runner.py` executa o pipeline completo em Python puro, sem depender de comandos externos:
 
@@ -263,11 +261,11 @@ Ele tambem exibe estatisticas e as 10 palavras mais frequentes.
 python3 mapreduce_runner.py
 ```
 
-Visualize a saida:
+**EVIDENCIA-03 - Pipeline inicial:** capture um print de tela mostrando a execucao de `python3 mapreduce_runner.py`, incluindo as estatisticas e o top 10 exibidos no terminal.
 
-```bash
-cat data/output.txt
-```
+Depois da execucao, abra o arquivo `mapreduce_app/data/output.txt` pelo Explorer do Codespaces e confira o resultado diretamente no editor.
+
+**EVIDENCIA-04 - Arquivo de saida inicial:** capture um print de tela mostrando o arquivo `data/output.txt` aberto no editor.
 
 ### Checkpoint 3
 
@@ -287,6 +285,8 @@ python3 benchmark.py
 ```
 
 O script cria arquivos de 1 MB, 5 MB e 10 MB em `data/` e mede o tempo de processamento para cada tamanho.
+
+**EVIDENCIA-05 - Benchmark:** capture um print de tela mostrando a execucao de `python3 benchmark.py` com os tempos registrados no terminal.
 
 ### 4.2 Analisando os resultados
 
@@ -320,14 +320,12 @@ O arquivo `data/livro.txt` contem o texto de **Dom Casmurro**, de Machado de Ass
 Use MapReduce para analisar:
 
 - Palavras mais frequentes no texto.
-- Ocorrencias de termos como `capitu`, `bentinho`, `amor` e `ciume`.
+- Ocorrencias de termos como `capitú`, `bentinho`, `amor` e `ciume`.
 - Termos que aparecem com maior recorrencia na obra.
 
 ### 5.1 Visualizando uma amostra
 
-```bash
-head -n 50 data/livro.txt
-```
+No Explorer do Codespaces, abra o arquivo `mapreduce_app/data/livro.txt` no editor. Use a barra de rolagem ou a busca do editor para observar a estrutura do texto antes do processamento.
 
 ### 5.2 Processando o livro
 
@@ -335,39 +333,83 @@ head -n 50 data/livro.txt
 python3 mapreduce_runner.py --input data/livro.txt --output data/livro_output.txt
 ```
 
+**EVIDENCIA-06 - Processamento do livro:** capture um print de tela mostrando a execucao do processamento de `data/livro.txt` no terminal.
+
 ### 5.3 Analisando as palavras mais frequentes
 
 ```bash
 sort -t$'\t' -k2 -nr data/livro_output.txt | head -20
 ```
 
+**EVIDENCIA-07 - Top 20 palavras:** capture um print de tela mostrando o resultado do top 20 de palavras mais frequentes.
+
 ### 5.4 Consultando palavras especificas
 
 ```bash
-grep -E $'^(capitu|bentinho|amor|ciume)\t' data/livro_output.txt
+grep -E $'^(capitú|bentinho|amor|ciume)\t' data/livro_output.txt
 ```
 
-> Observacao: o mapper converte palavras para minusculas. Por isso, pesquise por `capitu`, e nao `Capitu`.
+> Observacao: o mapper converte palavras para minusculas. Por isso, pesquise por `capitú`, e nao `Capitú`.
+
+**EVIDENCIA-08 - Consulta de termos:** registre em texto quantas vezes a palavra `capitú` aparece no arquivo processado. Se desejar, inclua tambem um print da consulta no terminal.
 
 ### Evidencias obrigatorias
 
 Capture evidencias da execucao:
 
-- Screenshot do terminal mostrando o processamento de `data/livro.txt`.
-- Screenshot do top 20 de palavras mais frequentes.
-- Registro textual informando quantas vezes `capitu` aparece no arquivo processado.
+- **EVIDENCIA-06:** screenshot do terminal mostrando o processamento de `data/livro.txt`.
+- **EVIDENCIA-07:** screenshot do top 20 de palavras mais frequentes.
+- **EVIDENCIA-08:** registro textual informando quantas vezes `capitú` aparece no arquivo processado.
 
 ### Checkpoint 5
 
 - [ ] O livro foi processado com sucesso.
 - [ ] O arquivo `data/livro_output.txt` foi criado.
 - [ ] As palavras mais frequentes foram analisadas.
-- [ ] A frequencia de `capitu` foi identificada.
+- [ ] A frequencia de `capitú` foi identificada.
 - [ ] As evidencias foram capturadas.
 
 ---
 
-## Parte 6: Registro no GitHub
+## Parte 6: Atividade Extra Opcional - Remocao de Preposicoes e Artigos
+
+Nesta atividade opcional, altere o processamento para remover palavras muito frequentes que nao ajudam tanto na analise, como artigos, preposicoes e conectivos.
+
+Exemplos de palavras que podem ser ignoradas:
+
+```text
+o, a, os, as, um, uma, uns, umas, de, da, do, das, dos, em, no, na, nos, nas, por, para, com, e, que
+```
+
+### 6.1 Planejando a alteracao
+
+No editor do Codespaces, examine novamente os arquivos `mapper.py`, `reducer.py` e `mapreduce_runner.py`. Decida em qual etapa faz mais sentido eliminar essas palavras.
+
+Sugestao: uma solucao simples e criar uma colecao de palavras ignoradas no `mapper.py` e emitir apenas as palavras que nao estiverem nessa colecao.
+
+### 6.2 Implementando e testando
+
+Depois de modificar o codigo, execute novamente:
+
+```bash
+python3 mapreduce_runner.py --input data/livro.txt --output data/livro_sem_stopwords_output.txt
+sort -t$'\t' -k2 -nr data/livro_sem_stopwords_output.txt | head -20
+```
+
+Compare o novo top 20 com o resultado anterior. Observe se palavras mais relevantes para o conteudo do texto aparecem com mais destaque.
+
+**EVIDENCIA-09 - Extra opcional:** se realizar esta etapa, capture um print de tela mostrando o novo top 20 sem artigos e preposicoes. Inclua tambem uma breve explicacao da estrategia usada.
+
+### Checkpoint Extra Opcional
+
+- [ ] A lista de palavras ignoradas foi definida.
+- [ ] O codigo foi alterado sem quebrar o pipeline original.
+- [ ] O livro foi processado novamente sem artigos e preposicoes selecionados.
+- [ ] O novo resultado foi comparado com o resultado anterior.
+
+---
+
+## Parte 7: Registro no GitHub
 
 Ao final da atividade, registre suas alteracoes no seu fork:
 
@@ -387,7 +429,7 @@ git config user.email "seu-email@example.com"
 
 Depois repita o commit.
 
-### Checkpoint 6
+### Checkpoint 7
 
 - [ ] Os resultados e alteracoes foram revisados com `git status`.
 - [ ] O commit foi criado.
@@ -395,29 +437,32 @@ Depois repita o commit.
 
 ---
 
-## Parte 7: Entrega da Atividade
+## Parte 8: Entrega da Atividade
 
 Entregue as evidencias na plataforma Microsoft Teams, conforme orientacao do professor.
 
 ### Evidencias obrigatorias
 
 1. **Ambiente de desenvolvimento**
-   - Screenshot do terminal com `python3 --version`.
-   - Screenshot mostrando o repositorio aberto no ambiente.
+   - **EVIDENCIA-01:** screenshot do terminal com `python3 --version`.
+   - **EVIDENCIA-02:** screenshot mostrando o repositorio aberto no ambiente.
 
 2. **Processamento MapReduce**
-   - Screenshot da execucao de `python3 mapreduce_runner.py`.
-   - Screenshot do arquivo `data/output.txt`.
+   - **EVIDENCIA-03:** screenshot da execucao de `python3 mapreduce_runner.py`.
+   - **EVIDENCIA-04:** screenshot do arquivo `data/output.txt` aberto no editor.
 
 3. **Benchmark**
-   - Screenshot da execucao de `python3 benchmark.py` com os tempos registrados.
+   - **EVIDENCIA-05:** screenshot da execucao de `python3 benchmark.py` com os tempos registrados.
 
 4. **Analise de Dom Casmurro**
-   - Screenshot da execucao com `data/livro.txt`.
-   - Screenshot do top 20 de palavras.
-   - Resposta textual: quantas vezes a palavra `capitu` aparece?
+   - **EVIDENCIA-06:** screenshot da execucao com `data/livro.txt`.
+   - **EVIDENCIA-07:** screenshot do top 20 de palavras.
+   - **EVIDENCIA-08:** resposta textual: quantas vezes a palavra `capitú` aparece?
 
-5. **Repositorio**
+5. **Atividade extra opcional**
+   - **EVIDENCIA-09:** se realizada, screenshot do novo top 20 sem artigos e preposicoes e breve explicacao da estrategia usada.
+
+6. **Repositorio**
    - Link do seu fork no GitHub.
 
 ---

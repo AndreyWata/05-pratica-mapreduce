@@ -87,7 +87,7 @@ sort -t$'\t' -k2 -nr data/output.txt | head -20
 Consultar palavras especificas no resultado de Dom Casmurro:
 
 ```bash
-grep -E $'^(capitu|bentinho|amor|ciume)\t' data/livro_output.txt
+grep -E $'^(capitú|bentinho|amor|ciume)\t' data/livro_output.txt
 ```
 
 ## Troubleshooting
