@@ -1,363 +1,343 @@
-# Atividade Prática: MapReduce com Python e Docker
+# Atividade Pratica: MapReduce com Python, Docker e GitHub Codespaces
 
-## Informações Gerais
+## Informacoes Gerais
 
-**Público-alvo:** Alunos de graduação em Ciência de Dados  
-**Temática:** Infraestrutura para projetos de Big Data  
-**Nível:** Intermediário
+**Publico-alvo:** alunos de graduacao em Ciencia de Dados  
+**Tematica:** infraestrutura para projetos de Big Data  
+**Nivel:** intermediario  
+**Ambiente obrigatorio:** GitHub Codespaces
 
 ---
 
 ## Objetivos de Aprendizagem
 
-Ao final desta atividade, você será capaz de:
+Ao final desta atividade, voce sera capaz de:
 
-1. Compreender os conceitos fundamentais do paradigma MapReduce
-2. Implementar funções Map e Reduce em Python
-3. Containerizar aplicações de Big Data usando Docker
-4. Processar datasets de forma distribuída
-5. Aplicar boas práticas de infraestrutura para projetos de dados
-
----
-
-## Pré-requisitos
-
-- Conhecimento básico de Python
-- Familiaridade com linha de comando (terminal/bash)
-- Conta no GitHub (gratuita)
-- Conta no Docker Hub (gratuita)
-- Navegador web moderno
+1. Explicar os fundamentos do paradigma MapReduce.
+2. Implementar as fases Map, Shuffle/Sort e Reduce em Python.
+3. Executar uma aplicacao de processamento de dados no GitHub Codespaces.
+4. Containerizar a aplicacao com Docker e executar o processamento em container.
+5. Analisar resultados de contagem de palavras em datasets pequenos e maiores.
+6. Registrar evidencias tecnicas da execucao da atividade.
 
 ---
 
-## Recursos Necessários
+## Pre-requisitos
 
-Todos os recursos podem ser acessados online gratuitamente:
+- Conhecimento basico de Python.
+- Familiaridade com terminal Linux.
+- Conta no GitHub.
+- Navegador web moderno.
 
-- **GitHub Codespaces** (ambiente de desenvolvimento na nuvem)
-- **Play with Docker** (https://labs.play-with-docker.com/) - Ambiente Docker online
-- **Dataset**: Arquivo de texto com dados para processamento
-
----
-
-## Parte 1: Fundamentos do MapReduce
-
-### 1.1 Conceitos Teóricos
-
-#### O que é MapReduce?
-
-MapReduce é um modelo de programação para processamento de grandes volumes de dados de forma distribuída e paralela. Foi popularizado pelo Google e é a base de frameworks como Hadoop.
-
-**Componentes principais:**
-
-1. **Map (Mapeamento)**: Transforma dados de entrada em pares chave-valor
-2. **Shuffle & Sort**: Agrupa todos os valores associados à mesma chave
-3. **Reduce (Redução)**: Processa e agrega os valores agrupados
-
-**Fluxo de execução:**
-
-```
-Input → Split → Map → Shuffle & Sort → Reduce → Output
-```
-
-#### Exemplo Conceitual: Contagem de Palavras
-
-**Entrada:**
-```
-"hello world"
-"hello python"
-```
-
-**Fase Map:**
-```
-("hello", 1)
-("world", 1)
-("hello", 1)
-("python", 1)
-```
-
-**Fase Shuffle & Sort:**
-```
-("hello", [1, 1])
-("python", [1])
-("world", [1])
-```
-
-**Fase Reduce:**
-```
-("hello", 2)
-("python", 1)
-("world", 1)
-```
-
-### ✅ Checkpoint 1.1
-
-Antes de prosseguir, responda:
-
-- [ ] Você compreende a diferença entre Map e Reduce?
-- [ ] Você consegue explicar o que acontece na fase Shuffle & Sort?
-- [ ] Você entende por que MapReduce é adequado para Big Data?
+> Toda a atividade deve ser executada no GitHub Codespaces. Nao utilize ambientes externos ou descontinuados.
 
 ---
 
-## Parte 2: Configuração do Ambiente
+## Recursos Necessarios
 
-### 2.1 Fazendo Fork e Clonando o Repositório no GitHub Codespaces
+- **GitHub Codespaces**: ambiente de desenvolvimento em nuvem com terminal, editor, Python e Docker.
+- **Repositorio da atividade**: fornecido pelo professor.
+- **Datasets locais**: arquivos em `mapreduce_app/data/`.
 
-**Passo 1:** Acesse https://github.com e faça login
+---
 
-**Passo 2:** Faça um fork do repositório do laboratório
+## Parte 1: Revisao Teorica sobre MapReduce
 
-1. Acesse o repositório original fornecido pelo professor
-2. Clique no botão "Fork" no canto superior direito
-3. Selecione sua conta como destino do fork
-4. Aguarde a criação do fork (alguns segundos)
+### 1.1 O que e MapReduce?
 
-**Passo 3:** Clone seu fork usando GitHub Codespaces
+MapReduce e um modelo de programacao criado para processar grandes volumes de dados por meio de tarefas independentes, paralelizaveis e distribuidas. A ideia central e quebrar um problema grande em partes menores, processar essas partes separadamente e depois combinar os resultados.
 
-1. No seu fork, clique no botão verde "Code"
-2. Selecione a aba "Codespaces"
-3. Clique em "Create codespace on main"
-4. Aguarde o ambiente carregar (pode levar 1-2 minutos)
+Esse paradigma foi popularizado pelo Google e influenciou ferramentas de Big Data como Hadoop. Mesmo quando usado em uma simulacao local, como nesta atividade, ele ajuda a entender como sistemas distribuidos organizam dados, trabalho e agregacao de resultados.
 
-**Passo 4:** Verifique o ambiente
+### 1.2 Fases do processamento
+
+O fluxo classico de MapReduce possui tres momentos principais:
+
+1. **Map**: recebe dados brutos e transforma cada item de entrada em pares chave-valor.
+2. **Shuffle & Sort**: agrupa os valores que possuem a mesma chave e ordena os dados para facilitar a agregacao.
+3. **Reduce**: recebe cada chave com seus valores associados e calcula o resultado final.
+
+Fluxo conceitual:
+
+```text
+Entrada -> Split -> Map -> Shuffle & Sort -> Reduce -> Saida
+```
+
+### 1.3 Exemplo: contagem de palavras
+
+Entrada:
+
+```text
+big data
+data science
+big systems
+```
+
+Saida da fase Map:
+
+```text
+big     1
+data    1
+data    1
+science 1
+big     1
+systems 1
+```
+
+Depois do Shuffle & Sort:
+
+```text
+big     [1, 1]
+data    [1, 1]
+science [1]
+systems [1]
+```
+
+Saida da fase Reduce:
+
+```text
+big     2
+data    2
+science 1
+systems 1
+```
+
+### 1.4 Por que MapReduce e importante em Big Data?
+
+MapReduce e importante porque permite:
+
+- **Paralelismo:** diferentes partes do dataset podem ser processadas ao mesmo tempo.
+- **Escalabilidade:** o mesmo modelo pode ser executado em poucos arquivos ou em grandes clusters.
+- **Tolerancia a falhas:** em plataformas distribuidas, tarefas com erro podem ser reexecutadas.
+- **Separacao de responsabilidades:** a funcao Map transforma dados; a funcao Reduce agrega resultados.
+- **Processamento em lote:** o modelo e adequado para tarefas analiticas sobre grandes volumes de dados historicos.
+
+### 1.5 Limitacoes do modelo
+
+MapReduce nao e ideal para todos os cenarios. Ele pode ser menos eficiente quando:
+
+- O processamento precisa ser interativo ou em tempo real.
+- O algoritmo exige muitas iteracoes sucessivas sobre os mesmos dados.
+- Ha necessidade de baixa latencia.
+- O custo de escrita e leitura intermediaria e alto.
+
+Frameworks mais recentes, como Apache Spark, surgiram para reduzir algumas dessas limitacoes, mas MapReduce continua sendo uma base conceitual importante para entender Big Data.
+
+### Checkpoint 1
+
+Antes de prosseguir, confirme:
+
+- [ ] Sei explicar a diferenca entre Map e Reduce.
+- [ ] Entendo o papel da fase Shuffle & Sort.
+- [ ] Consigo descrever por que pares chave-valor sao usados.
+- [ ] Reconheco vantagens e limitacoes do MapReduce.
+
+---
+
+## Parte 2: Configuracao do Ambiente no GitHub Codespaces
+
+### 2.1 Criando o ambiente
+
+1. Acesse o repositorio original fornecido pelo professor.
+2. Clique em **Fork** para criar uma copia na sua conta.
+3. No seu fork, clique em **Code**.
+4. Abra a aba **Codespaces**.
+5. Clique em **Create codespace on main**.
+6. Aguarde o ambiente carregar.
+
+### 2.2 Verificando ferramentas
+
+No terminal do Codespaces, execute:
 
 ```bash
 python3 --version
 docker --version
+docker compose version
 ```
 
-**Passo 5:** Explore a estrutura do projeto
+### 2.3 Explorando o projeto
 
 ```bash
-ls -la mapreduce_app/
+ls -la
+ls -la mapreduce_app
 ```
 
-Você verá:
-- `mapper.py` - Script de mapeamento
-- `reducer.py` - Script de redução
-- `mapreduce_runner.py` - Orquestrador principal
-- `benchmark.py` - Script de análise de desempenho
-- `Dockerfile` - Configuração do container
-- `data/` - Diretório com datasets de exemplo
+Arquivos principais:
 
-### ✅ Checkpoint 2.1
+- `mapper.py`: implementa a fase Map.
+- `reducer.py`: implementa a fase Reduce.
+- `mapreduce_runner.py`: orquestra o pipeline completo.
+- `benchmark.py`: gera datasets de teste e mede desempenho.
+- `Dockerfile`: define a imagem da aplicacao.
+- `docker-compose.yml`: executa a aplicacao containerizada.
+- `data/`: contem os datasets usados na atividade.
 
-Verifique:
+### Checkpoint 2
 
-- [ ] Fork do repositório foi criado com sucesso
-- [ ] Repositório foi clonado no Codespaces
-- [ ] Python 3.x está instalado
-- [ ] Docker está disponível
-- [ ] Todos os arquivos da aplicação estão presentes
-- [ ] Você consegue visualizar os scripts Python
+- [ ] O Codespace abriu corretamente.
+- [ ] Python esta disponivel.
+- [ ] Docker esta disponivel.
+- [ ] Os arquivos da aplicacao estao visiveis.
 
 ---
 
-## Parte 3: Implementação do MapReduce em Python
+## Parte 3: Implementacao MapReduce em Python
 
-### 3.1 Explorando a Estrutura do Projeto
-
-O repositório já contém todos os scripts necessários. Vamos entender cada componente:
+### 3.1 Entrando no diretorio da aplicacao
 
 ```bash
 cd mapreduce_app
-ls -la
 ```
 
-Você verá a seguinte estrutura:
-
-```
-mapreduce_app/
-├── mapper.py              # Função Map
-├── reducer.py             # Função Reduce  
-├── mapreduce_runner.py    # Orquestrador
-├── benchmark.py           # Análise de desempenho
-├── Dockerfile             # Imagem Docker
-├── .dockerignore          # Arquivos ignorados
-└── data/                  # Datasets
-    ├── input.txt          # Dataset de exemplo
-    └── livro.txt          # Dom Casmurro (Projeto Gutenberg)
-```
-
-### 3.2 Entendendo o Dataset
-
-Visualize o conteúdo do arquivo de entrada:
+### 3.2 Entendendo o dataset inicial
 
 ```bash
 cat data/input.txt
 ```
 
-O arquivo contém frases sobre Big Data e tecnologia que serão processadas pelo MapReduce.
+Esse arquivo contem frases curtas sobre Big Data e tecnologia. Ele sera usado para validar o pipeline antes de processar arquivos maiores.
 
 ### 3.3 Analisando o Mapper
-
-Abra e analise o arquivo `mapper.py`:
 
 ```bash
 cat mapper.py
 ```
 
-**O que o Mapper faz:**
-- Lê linhas de texto da entrada padrão (stdin)
-- Converte o texto para minúsculas
-- Remove pontuação usando expressões regulares
-- Emite cada palavra no formato `palavra\t1`
+O `mapper.py`:
 
-**Conceitos importantes:**
-- Usa `sys.stdin` para ler dados
-- Usa `re.findall()` para extrair palavras
-- Emite pares chave-valor no formato TSV (Tab-Separated Values)
+- Le linhas de texto da entrada padrao.
+- Converte o texto para minusculas.
+- Extrai palavras usando expressao regular.
+- Emite pares no formato `palavra<TAB>1`.
+
+Teste isolado do mapper:
+
+```bash
+echo "Big data, big systems" | python3 mapper.py
+```
 
 ### 3.4 Analisando o Reducer
-
-Abra e analise o arquivo `reducer.py`:
 
 ```bash
 cat reducer.py
 ```
 
-**O que o Reducer faz:**
-- Lê pares `palavra\tcontagem` da entrada padrão
-- Usa `defaultdict` para acumular contagens
-- Emite resultados ordenados alfabeticamente
+O `reducer.py`:
 
-**Conceitos importantes:**
-- Pressupõe que a entrada já está ordenada (fase Shuffle & Sort)
-- Usa estruturas de dados eficientes (`defaultdict`)
-- Tratamento de erros para linhas mal formatadas
+- Le pares `palavra<TAB>contagem`.
+- Soma as contagens por palavra.
+- Emite o resultado final ordenado alfabeticamente.
 
-### 3.5 Analisando o Runner (Orquestrador)
+Teste isolado do reducer:
 
-Abra e analise o arquivo `mapreduce_runner.py`:
+```bash
+printf "big\t1\nbig\t1\ndata\t1\n" | python3 reducer.py
+```
+
+### 3.5 Entendendo o Runner
 
 ```bash
 cat mapreduce_runner.py
 ```
 
-**O que o Runner faz:**
-1. Orquestra todo o pipeline MapReduce
-2. Executa os 3 processos em sequência usando `subprocess`
-3. Conecta a saída de um processo na entrada do próximo (pipes)
-4. Exibe estatísticas e top 10 palavras mais frequentes
+O `mapreduce_runner.py` executa o pipeline completo:
 
-**Conceitos importantes:**
-- Usa `subprocess.Popen()` para criar processos
-- Implementa pipeline Unix: `cat file | python3 mapper.py | sort | python3 reducer.py`
-- Aceita argumentos de linha de comando (`--input`, `--output`)
+```text
+arquivo de entrada -> mapper.py -> sort -> reducer.py -> arquivo de saida
+```
 
-### 3.6 Testando a Implementação
+Ele tambem mostra estatisticas e as 10 palavras mais frequentes.
 
-Execute o processamento MapReduce:
-
-### 3.6 Testando a Implementação
-
-Execute o processamento MapReduce:
+### 3.6 Executando o pipeline
 
 ```bash
-# Torne os scripts executáveis (Linux/Mac/Git Bash)
-chmod +x mapper.py reducer.py mapreduce_runner.py
-
-# Execute o runner
 python3 mapreduce_runner.py
 ```
 
-Visualize os resultados:
+Visualize a saida:
 
 ```bash
 cat data/output.txt
 ```
 
-### ✅ Checkpoint 3.6
+### Checkpoint 3
 
-Verifique:
-
-- [ ] Você entendeu o propósito de cada script
-- [ ] O processamento foi executado com sucesso
-- [ ] O arquivo `data/output.txt` foi gerado
-- [ ] Você consegue ver a contagem de palavras
-- [ ] As palavras "data" e "big" aparecem múltiplas vezes
-- [ ] As estatísticas e top 10 foram exibidas corretamente
+- [ ] O pipeline executou sem erros.
+- [ ] O arquivo `data/output.txt` foi criado.
+- [ ] As palavras foram contadas corretamente.
+- [ ] O terminal exibiu estatisticas e top 10 palavras.
 
 ---
 
-## Parte 4: Containerização com Docker
+## Parte 4: Containerizacao com Docker
 
 ### 4.1 Explorando o Dockerfile
-
-O repositório já contém um `Dockerfile` configurado. Vamos entender seu conteúdo:
 
 ```bash
 cat Dockerfile
 ```
 
-**Componentes do Dockerfile:**
+Pontos principais:
 
-- `FROM python:3.11-slim` - Imagem base leve do Python
-- `WORKDIR /app` - Define o diretório de trabalho
-- `RUN apt-get update...` - Instala dependências do sistema (comando `sort`)
-- `COPY` - Copia os scripts Python para o container
-- `RUN chmod +x` - Torna os scripts executáveis
-- `CMD` - Comando padrão ao executar o container
+- `FROM python:3.11-slim`: usa uma imagem base leve com Python.
+- `WORKDIR /app`: define o diretorio de trabalho no container.
+- `apt-get install coreutils`: garante o comando `sort`.
+- `COPY`: copia os scripts para a imagem.
+- `CMD`: define o comando padrao do container.
 
 ### 4.2 Verificando o .dockerignore
-
-O arquivo `.dockerignore` evita copiar arquivos desnecessários para a imagem:
 
 ```bash
 cat .dockerignore
 ```
 
-Isso reduz o tamanho da imagem e melhora a segurança.
+Esse arquivo evita enviar conteudos desnecessarios para o contexto de build.
 
-### 4.3 Construindo a Imagem Docker
+### 4.3 Construindo a imagem
 
 ```bash
 docker build -t mapreduce-app:v1.0 .
 ```
 
-Aguarde a construção (pode levar alguns minutos na primeira vez).
-
-### 4.4 Verificando a Imagem
+### 4.4 Verificando a imagem local
 
 ```bash
 docker images | grep mapreduce-app
 ```
 
-### ✅ Checkpoint 4.4
+### Checkpoint 4
 
-Verifique:
-
-- [ ] Você entendeu a estrutura do Dockerfile
-- [ ] Build foi concluído sem erros
-- [ ] Imagem `mapreduce-app:v1.0` aparece na listagem
-- [ ] O tamanho da imagem é razoável (< 200MB)
+- [ ] Entendi a estrutura do `Dockerfile`.
+- [ ] A imagem `mapreduce-app:v1.0` foi criada.
+- [ ] A imagem aparece na listagem local do Docker.
 
 ---
 
-## Parte 5: Executando a Aplicação Containerizada
+## Parte 5: Executando a Aplicacao Containerizada
 
-### 5.1 Executando o Container
+### 5.1 Executando o container
 
-Execute o container montando o volume de dados:
+No Codespaces, dentro do diretorio `mapreduce_app`, execute:
 
-**Linux/Mac/Git Bash:**
 ```bash
 docker run --rm \
   -v "$(pwd)/data:/app/data" \
   mapreduce-app:v1.0
 ```
 
-**Windows PowerShell:**
-```powershell
-docker run --rm `
-  -v "${PWD}/data:/app/data" `
-  mapreduce-app:v1.0
+Verifique o resultado:
+
+```bash
+cat data/output.txt
 ```
 
-### 5.2 Testando com Dados Maiores
+### 5.2 Executando com Docker Compose
 
-O script `benchmark.py` já está incluído no repositório. Ele gera automaticamente arquivos de teste de diferentes tamanhos.
+```bash
+docker compose up --build mapreduce-processor
+```
+
+### 5.3 Benchmark
 
 Execute o benchmark localmente:
 
@@ -365,15 +345,12 @@ Execute o benchmark localmente:
 python3 benchmark.py
 ```
 
-Isso criará arquivos de teste de 1MB, 5MB e 10MB e medirá o desempenho.
+O script cria arquivos de 1 MB, 5 MB e 10 MB em `data/` e mede o tempo de processamento.
 
-### 5.3 Processando Arquivos Grandes no Container (OPCIONAL)
+### 5.4 Processando um arquivo gerado pelo benchmark no container
 
-**Esta seção é opcional.** Se você tiver tempo e interesse, pode explorar o processamento de arquivos maiores.
+Depois de executar o benchmark, processe um arquivo maior:
 
-Execute o processamento de arquivo grande usando argumentos:
-
-**Linux/Mac/Git Bash:**
 ```bash
 docker run --rm \
   -v "$(pwd)/data:/app/data" \
@@ -381,168 +358,147 @@ docker run --rm \
   python3 mapreduce_runner.py --input data/benchmark_1mb.txt --output data/benchmark_1mb_output.txt
 ```
 
-**Windows PowerShell:**
-```powershell
-docker run --rm `
-  -v "${PWD}/data:/app/data" `
-  mapreduce-app:v1.0 `
-  python3 mapreduce_runner.py --input data/benchmark_1mb.txt --output data/benchmark_1mb_output.txt
-```
+### Checkpoint 5
 
-
-### ✅ Checkpoint 5.3 (OPCIONAL)
-
-Se você realizou esta seção opcional, verifique:
-
-- [ ] Container executou sem erros
-- [ ] Benchmark gerou arquivos de teste
-- [ ] Você consegue processar arquivos de diferentes tamanhos
-- [ ] Entendeu como passar argumentos para o container
+- [ ] O container executou sem erros.
+- [ ] O volume `data/` foi montado corretamente.
+- [ ] O benchmark gerou arquivos de teste.
+- [ ] Um arquivo maior foi processado com sucesso.
 
 ---
 
-## Parte 6: Exercícios Práticos
+## Parte 6: Exercicio Pratico - Analise Literaria
 
-### Exercício 1: Análise Literária - Dom Casmurro (Básico)
+O arquivo `data/livro.txt` contem o texto de **Dom Casmurro**, de Machado de Assis, disponibilizado pelo Projeto Gutenberg.
 
-O arquivo `data/livro.txt` contém o texto completo do romance "Dom Casmurro" de Machado de Assis, disponível através do Projeto Gutenberg (gutenberg.org). Use MapReduce para analisar:
-- As palavras mais frequentes no texto
-- Quantas vezes aparecem palavras-chave como "Capitu", "Bentinho", "amor", "ciúme"
-- Identificar os termos mais relevantes da obra
+Use MapReduce para analisar:
 
-**Visualize uma amostra do dataset:**
+- Palavras mais frequentes no texto.
+- Ocorrencias de termos como `capitu`, `bentinho`, `amor` e `ciume`.
+- Termos que aparecem com maior recorrencia na obra.
+
+### 6.1 Visualizando uma amostra
 
 ```bash
 head -n 50 data/livro.txt
 ```
 
-**Tarefa:** Execute o `mapreduce_runner.py` para processar o livro Dom Casmurro.
+### 6.2 Processando o livro
 
 ```bash
 python3 mapreduce_runner.py --input data/livro.txt --output data/livro_output.txt
 ```
 
-**Análise adicional:** Após processar, examine as palavras mais frequentes:
+### 6.3 Analisando as palavras mais frequentes
 
 ```bash
-# Ver as 20 palavras mais frequentes
 sort -t$'\t' -k2 -nr data/livro_output.txt | head -20
 ```
 
-**📸 EVIDÊNCIA OBRIGATÓRIA:**
-
-Após completar o exercício, capture uma evidência da execução:
-- Screenshot do terminal mostrando a saída do processamento do livro (incluindo o top 10 de palavras)
-- Screenshot do arquivo de saída mostrando as palavras mais frequentes
-
-**Salve esta evidência**, pois você precisará enviá-la na plataforma TEAMS.
-
-### ✅ Checkpoint 6
-
-Complete o exercício:
-
-- [ ] Exercício 1 concluído
-- [ ] Evidência capturada e salva
-
----
-
-## Parte 7: Deployment usando containers via HUB
-
-
-### 7.1 Publicando no Docker Hub
-
-Publique sua imagem Docker no Docker Hub para compartilhamento:
+### 6.4 Consultando palavras especificas
 
 ```bash
-# Garanta que não esta logado com nenhuma conta
-docker logout
-
-# Login no Docker Hub
-docker login
-
-# Tag da imagem com seu usuário do Docker Hub
-docker tag mapreduce-app:v1.0 seuusuario/mapreduce-app:v1.0
-
-# Push para o Docker Hub
-docker push seuusuario/mapreduce-app:v1.0
+grep -E $'^(capitu|bentinho|amor|ciume)\t' data/livro_output.txt
 ```
 
-**Verificando a publicação:**
+> Observacao: o mapper converte palavras para minusculas. Por isso, pesquise por `capitu`, e nao `Capitu`.
 
-1. Acesse https://hub.docker.com
-2. Faça login com sua conta
-3. Verifique que sua imagem aparece nos seus repositórios
-4. Compartilhe o link: `docker pull seuusuario/mapreduce-app:v1.0`
+### Evidencias obrigatorias
 
-### ✅ Checkpoint 7.3
+Capture evidencias da execucao:
 
-Finalize o projeto:
+- Screenshot do terminal mostrando o processamento de `data/livro.txt`.
+- Screenshot do top 20 de palavras mais frequentes.
+- Registro textual informando quantas vezes `capitu` aparece no arquivo processado.
 
-- [ ] Código commitado no Git
-- [ ] Imagem publicada no Docker Hub
+### Checkpoint 6
+
+- [ ] O livro foi processado com sucesso.
+- [ ] O arquivo `data/livro_output.txt` foi criado.
+- [ ] As palavras mais frequentes foram analisadas.
+- [ ] A frequencia de `capitu` foi identificada.
+- [ ] As evidencias foram capturadas.
 
 ---
 
-### ✅ Checkpoint Final
+## Parte 7: Registro no GitHub
 
-Autoavaliação:
+Ao final da atividade, registre suas alteracoes no seu fork:
 
-- [ ] Compreendo o paradigma MapReduce profundamente
-- [ ] Consigo implementar Map e Reduce para diferentes problemas
-- [ ] Sei containerizar aplicações com Docker
-- [ ] Entendo os trade-offs de infraestrutura para Big Data
-- [ ] Posso explicar o código para outra pessoa
-- [ ] Sei publicar imagens Docker no Docker Hub
+```bash
+git status
+git add .
+git commit -m "conclui atividade mapreduce"
+git push
+```
+
+Se o Git solicitar configuracao de usuario no Codespaces, execute:
+
+```bash
+git config user.name "Seu Nome"
+git config user.email "seu-email@example.com"
+```
+
+Depois repita o commit.
+
+### Checkpoint 7
+
+- [ ] Os resultados e alteracoes foram revisados com `git status`.
+- [ ] O commit foi criado.
+- [ ] O push foi enviado para o fork.
 
 ---
 
 ## Parte 8: Entrega da Atividade
 
-### 8.1 O que deve ser entregue
+Entregue as evidencias na plataforma Microsoft Teams, conforme orientacao do professor.
 
-Você deve entregar **evidências** da realização desta atividade prática na plataforma do **Microsoft TEAMS**.
+### Evidencias obrigatorias
 
-### 8.2 Evidências Obrigatórias
+1. **Execucao no Codespaces**
+   - Screenshot do terminal com `python3 --version` e `docker --version`.
+   - Screenshot mostrando o repositorio aberto no Codespaces.
 
-Prepare as seguintes evidências:
+2. **Processamento MapReduce**
+   - Screenshot da execucao de `python3 mapreduce_runner.py`.
+   - Screenshot do arquivo `data/output.txt`.
 
-1. **Exercício 1 (Análise Literária - Dom Casmurro):**
-   - Screenshot da execução do processamento do livro (incluindo estatísticas e top 10)
-   - Screenshot do arquivo de saída com as palavras mais frequentes
-   - Breve análise: quantas vezes a palavra capitú aparece no livro?
+3. **Container Docker**
+   - Screenshot do comando `docker build -t mapreduce-app:v1.0 .`.
+   - Screenshot do comando `docker run` executado com sucesso.
 
-2. **Publicação no Docker Hub:**
-   - Screenshot da imagem publicada no Docker Hub
-   - Link público para sua imagem (exemplo: `docker pull seuusuario/mapreduce-app:v1.0`)
+4. **Analise de Dom Casmurro**
+   - Screenshot da execucao com `data/livro.txt`.
+   - Screenshot do top 20 de palavras.
+   - Resposta textual: quantas vezes a palavra `capitu` aparece?
 
-3. **Link do seu Fork no GitHub:**
-   - URL do seu repositório fork com todas as modificações
+5. **Repositorio**
+   - Link do seu fork no GitHub.
 
-### 8.3 Como entregar
-   - Submeta todas as evidências solicitadas na tarefa que foi atribuida a você na Plataforma Teams.
-  
+---
+
+## Checkpoint Final
+
+Autoavaliacao:
+
+- [ ] Compreendo o paradigma MapReduce.
+- [ ] Consigo explicar Map, Shuffle/Sort e Reduce.
+- [ ] Sei executar a aplicacao no Codespaces.
+- [ ] Sei construir e executar uma imagem Docker local.
+- [ ] Consigo interpretar os resultados da contagem de palavras.
+- [ ] Tenho evidencias suficientes para entregar a atividade.
+
 ---
 
 ## Recursos Adicionais
 
-### Documentação
-
-- [MapReduce Paper (Google)](https://research.google/pubs/pub62/)
+- [MapReduce Paper - Google](https://research.google/pubs/pub62/)
 - [Docker Documentation](https://docs.docker.com/)
+- [GitHub Codespaces Documentation](https://docs.github.com/codespaces)
 - [Python subprocess module](https://docs.python.org/3/library/subprocess.html)
 
 ---
 
+## Conclusao
 
-## Conclusão
-
-Parabéns! Você completou a atividade prática de MapReduce com Python e Docker.
-
-### O que você aprendeu
-
-✅ Conceitos fundamentais de MapReduce  
-✅ Implementação de pipelines de processamento de dados  
-✅ Containerização com Docker  
-✅ Boas práticas de infraestrutura para Big Data  
-✅ Publicação de imagens no Docker Hub
-
+Nesta atividade, voce revisou a teoria de MapReduce, executou um pipeline de contagem de palavras em Python, containerizou a aplicacao com Docker e analisou um texto literario usando o ambiente GitHub Codespaces.

@@ -1,163 +1,113 @@
 # MapReduce Big Data Application
 
-Aplicação de processamento de dados usando o paradigma MapReduce, implementada em Python e containerizada com Docker.
+Aplicacao de processamento de dados usando o paradigma MapReduce, implementada em Python e containerizada com Docker.
 
-## 🚀 Quick Start
+Este diretorio foi preparado para execucao no GitHub Codespaces.
 
-### Requisitos
+## Requisitos
+
 - Python 3.8+
-- Docker 20.10+ (opcional, para containerização)
-- Docker Compose 2.0+ (opcional, para orquestração)
+- Docker 20.10+
+- Docker Compose 2+
 
-### Executar Localmente
+## Executar com Python
 
 ```bash
-# Navegue até o diretório da aplicação
 cd mapreduce_app
-
-# Torne os scripts executáveis (Linux/Mac)
-chmod +x mapper.py reducer.py mapreduce_runner.py
-
-# Execute o processamento
 python3 mapreduce_runner.py
 ```
 
-### Executar com Docker
+Para processar outro arquivo:
 
 ```bash
-# Construa a imagem
-docker build -t mapreduce-app:v1.0 .
+python3 mapreduce_runner.py --input data/livro.txt --output data/livro_output.txt
+```
 
-# Execute o container
+## Executar com Docker
+
+```bash
+cd mapreduce_app
+docker build -t mapreduce-app:v1.0 .
 docker run --rm -v "$(pwd)/data:/app/data" mapreduce-app:v1.0
 ```
 
-### Executar com Docker Compose
+## Executar com Docker Compose
 
 ```bash
-# Processamento padrão
-docker-compose up mapreduce-processor
-
-# Processamento de arquivo grande
-docker-compose --profile large up mapreduce-large
+cd mapreduce_app
+docker compose up --build mapreduce-processor
 ```
 
-## 📊 Estrutura do Projeto
-
-```
-mapreduce_app/
-├── mapper.py              # Função Map - transforma texto em pares (palavra, 1)
-├── reducer.py             # Função Reduce - agrega contagens de palavras
-├── mapreduce_runner.py    # Orquestrador do pipeline MapReduce
-├── benchmark.py           # Script de análise de desempenho
-├── Dockerfile             # Configuração da imagem Docker
-├── docker-compose.yml     # Orquestração de containers
-├── .dockerignore          # Arquivos ignorados pelo Docker
-└── data/                  # Datasets de exemplo
-    ├── input.txt          # Dataset pequeno para testes
-    └── logs.txt           # Dataset de logs para exercícios
-```
-
-## 🧪 Testes e Benchmark
+## Benchmark
 
 ```bash
-# Execute o benchmark de desempenho
+cd mapreduce_app
 python3 benchmark.py
 ```
 
-## 📝 Como Funciona
+O benchmark gera arquivos em `data/` e executa o pipeline para medir o tempo de processamento.
 
-### Pipeline MapReduce
+## Estrutura do Projeto
 
-1. **Map**: O `mapper.py` lê linhas de texto e emite pares `(palavra, 1)` para cada palavra encontrada
-2. **Shuffle & Sort**: As palavras são ordenadas alfabeticamente (usando o comando `sort`)
-3. **Reduce**: O `reducer.py` agrega as contagens de cada palavra
-
-### Exemplo de Execução
-
-**Entrada (input.txt):**
-```
-big data is transforming the world
-data science requires big data infrastructure
-```
-
-**Saída do Map:**
-```
-big	1
-data	1
-is	1
-transforming	1
-...
+```text
+mapreduce_app/
+|-- mapper.py              # Fase Map: transforma texto em pares (palavra, 1)
+|-- reducer.py             # Fase Reduce: agrega contagens por palavra
+|-- mapreduce_runner.py    # Orquestrador do pipeline MapReduce
+|-- benchmark.py           # Geracao de dados e medicao de desempenho
+|-- Dockerfile             # Configuracao da imagem Docker
+|-- docker-compose.yml     # Execucao containerizada local
+|-- .dockerignore          # Arquivos ignorados no build Docker
+`-- data/                  # Datasets e arquivos de saida
+    |-- input.txt
+    |-- logs.txt
+    `-- livro.txt
 ```
 
-**Saída do Reduce:**
+## Como Funciona
+
+O pipeline executado por `mapreduce_runner.py` segue este fluxo:
+
+```text
+arquivo de entrada -> mapper.py -> sort -> reducer.py -> arquivo de saida
 ```
-big	2
-data	3
-infrastructure	1
-...
-```
 
-## 🎓 Exercícios Práticos
+1. **Map:** `mapper.py` le o texto e emite pares `palavra<TAB>1`.
+2. **Shuffle & Sort:** o comando `sort` organiza os pares por palavra.
+3. **Reduce:** `reducer.py` soma as contagens de cada palavra.
 
-### Exercício 1: Análise de Logs
-Modifique os scripts para contar logs por tipo (INFO, WARNING, ERROR) usando o arquivo `data/logs.txt`.
+## Comandos Uteis
 
-### Exercício 2: Top-K Palavras
-Altere o reducer para retornar apenas as K palavras mais frequentes.
-
-### Exercício 3: Análise de Sentimentos
-Implemente um classificador simples de sentimentos (positivo/negativo/neutro).
-
-## 🔧 Customização
-
-### Processar arquivo diferente
+Ver as palavras mais frequentes:
 
 ```bash
-python3 mapreduce_runner.py --input data/seu_arquivo.txt --output data/resultado.txt
+sort -t$'\t' -k2 -nr data/output.txt | head -20
 ```
 
-### Gerar arquivo de teste grande
+Consultar palavras especificas no resultado de Dom Casmurro:
 
-```python
-python3 << 'EOF'
-import random
-
-words = ["data", "big", "python", "docker", "mapreduce", "science"]
-with open("data/large_input.txt", "w") as f:
-    for _ in range(1000):
-        line = " ".join(random.choices(words, k=15))
-        f.write(line + "\n")
-EOF
+```bash
+grep -E $'^(capitu|bentinho|amor|ciume)\t' data/livro_output.txt
 ```
 
-## 📚 Recursos de Aprendizagem
+## Troubleshooting
 
-- [MapReduce Paper (Google)](https://research.google/pubs/pub62/)
+Se o Docker nao responder no Codespaces, verifique:
+
+```bash
+docker --version
+docker info
+```
+
+Se o arquivo de saida nao aparecer, confirme que voce esta no diretorio `mapreduce_app` e que o arquivo de entrada existe:
+
+```bash
+pwd
+ls -la data
+```
+
+## Recursos
+
+- [MapReduce Paper - Google](https://research.google/pubs/pub62/)
 - [Docker Documentation](https://docs.docker.com/)
-- [Apache Hadoop](https://hadoop.apache.org/)
-- [Apache Spark](https://spark.apache.org/)
-
-## 🐛 Troubleshooting
-
-### Erro: Permissão negada
-```bash
-chmod +x mapper.py reducer.py mapreduce_runner.py
-```
-
-### Erro: Comando 'sort' não encontrado (Windows)
-No Windows, use o Git Bash ou WSL para executar os scripts.
-
-### Erro: Volume não montado no Docker (Windows)
-```bash
-docker run --rm -v "${PWD}/data:/app/data" mapreduce-app:v1.0
-```
-
-## 📄 Licença
-
-MIT License - Livre para uso educacional e comercial.
-
----
-
-**Desenvolvido para o curso de Ciência de Dados**  
-**Versão 1.0 - Outubro 2025**
+- [GitHub Codespaces Documentation](https://docs.github.com/codespaces)
