@@ -1,25 +1,34 @@
 #!/usr/bin/env python3
 """
 Mapper: Transforma linhas de texto em pares (palavra, 1)
+Ignorando stopwords
 """
+
 import sys
 import re
+from stopwords import STOPWORDS
+
 
 def mapper():
     """
     Lê linhas do stdin e emite pares (palavra, 1)
+    ignorando palavras irrelevantes.
     """
+
     for line in sys.stdin:
-        # Remove espaços em branco e converte para minúsculas
+
+        # Remove espaços e converte para minúsculas
         line = line.strip().lower()
-        
-        # Remove pontuação e divide em palavras
+
+        # Extrai palavras
         words = re.findall(r'\b\w+\b', line)
-        
-        # Emite cada palavra com contagem 1
+
+        # Emite apenas palavras úteis
         for word in words:
-            # Formato: palavra\t1
-            print(f"{word}\t1")
+
+            if word not in STOPWORDS:
+                print(f"{word}\t1")
+
 
 if __name__ == "__main__":
     mapper()
